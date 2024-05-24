@@ -1,0 +1,1770 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css"><link rel="stylesheet" href="css/L.Control.Locate.min.css">
+        <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/leaflet-search.css">
+        <link rel="stylesheet" href="css/leaflet-control-geocoder.Geocoder.css">
+        <link rel="stylesheet" href="css/leaflet-measure.css">
+        <style>
+        #map {
+            width: 1521px;
+            height: 823px;
+        }
+        </style>
+        <title></title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script><script src="js/L.Control.Locate.min.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet-control-geocoder.Geocoder.js"></script>
+        <script src="js/leaflet-measure.js"></script>
+        <script src="js/leaflet-search.js"></script>
+        <script src="data/DAS_UPTPAS_20_1.js"></script>
+        <script src="data/admin_kec_kota_pas_2.js"></script>
+        <script src="data/admin_kec_kab_pas_3.js"></script>
+        <script src="data/admin_kec_kota_prob_4.js"></script>
+        <script src="data/admin_kec_kab_prob_5.js"></script>
+        <script src="data/Pos_hujan_6.js"></script>
+        <script src="data/Pos_AWLR_7.js"></script>
+        <script>
+        var highlightLayer;
+        function highlightFeature(e) {
+            highlightLayer = e.target;
+            highlightLayer.openPopup();
+        }
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:28, minZoom:1
+        }).fitBounds([[-8.051986763231428,112.72294670135288],[-7.5589708409034655,113.6351162336503]]);
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        L.control.locate({locateOptions: {maxZoom: 19}}).addTo(map);
+        var measureControl = new L.Control.Measure({
+            position: 'topleft',
+            primaryLengthUnit: 'meters',
+            secondaryLengthUnit: 'kilometers',
+            primaryAreaUnit: 'sqmeters',
+            secondaryAreaUnit: 'hectares'
+        });
+        measureControl.addTo(map);
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .innerHTML = '';
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .className += ' fas fa-ruler';
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+            map.setMaxBounds(map.getBounds());
+        }
+        map.createPane('pane_OpenStreetMap_0');
+        map.getPane('pane_OpenStreetMap_0').style.zIndex = 400;
+        var layer_OpenStreetMap_0 = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            pane: 'pane_OpenStreetMap_0',
+            opacity: 1.0,
+            attribution: '',
+            minZoom: 1,
+            maxZoom: 28,
+            minNativeZoom: 0,
+            maxNativeZoom: 19
+        });
+        layer_OpenStreetMap_0;
+        map.addLayer(layer_OpenStreetMap_0);
+        function pop_DAS_UPTPAS_20_1(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Id'] !== null ? autolinker.link(feature.properties['Id'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Nama'] !== null ? autolinker.link(feature.properties['Nama'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Luas_Km2'] !== null ? autolinker.link(feature.properties['Luas_Km2'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Nama_SWS'] !== null ? autolinker.link(feature.properties['Nama_SWS'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Sumber_Dat'] !== null ? autolinker.link(feature.properties['Sumber_Dat'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['area'] !== null ? autolinker.link(feature.properties['area'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_DAS_UPTPAS_20_1_0(feature) {
+            switch(String(feature.properties['Nama'])) {
+                case 'DAS Bandeng':
+                    return {
+                pane: 'pane_DAS_UPTPAS_20_1',
+                opacity: 1,
+                color: 'rgba(215,25,28,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(59,202,212,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DAS Banyubiru':
+                    return {
+                pane: 'pane_DAS_UPTPAS_20_1',
+                opacity: 1,
+                color: 'rgba(215,25,28,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(224,106,228,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DAS Banyuglugur':
+                    return {
+                pane: 'pane_DAS_UPTPAS_20_1',
+                opacity: 1,
+                color: 'rgba(215,25,28,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(164,69,227,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DAS Bayeman':
+                    return {
+                pane: 'pane_DAS_UPTPAS_20_1',
+                opacity: 1,
+                color: 'rgba(215,25,28,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(42,153,200,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DAS Besi':
+                    return {
+                pane: 'pane_DAS_UPTPAS_20_1',
+                opacity: 1,
+                color: 'rgba(215,25,28,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(219,133,120,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DAS Besuk':
+                    return {
+                pane: 'pane_DAS_UPTPAS_20_1',
+                opacity: 1,
+                color: 'rgba(215,25,28,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(90,129,201,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DAS Bhinar':
+                    return {
+                pane: 'pane_DAS_UPTPAS_20_1',
+                opacity: 1,
+                color: 'rgba(215,25,28,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(179,43,206,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DAS Blobo':
+                    return {
+                pane: 'pane_DAS_UPTPAS_20_1',
+                opacity: 1,
+                color: 'rgba(215,25,28,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(230,112,124,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DAS Bujel':
+                    return {
+                pane: 'pane_DAS_UPTPAS_20_1',
+                opacity: 1,
+                color: 'rgba(215,25,28,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(216,162,27,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DAS Curahmenjangan':
+                    return {
+                pane: 'pane_DAS_UPTPAS_20_1',
+                opacity: 1,
+                color: 'rgba(215,25,28,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(71,238,230,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DAS Gembong':
+                    return {
+                pane: 'pane_DAS_UPTPAS_20_1',
+                opacity: 1,
+                color: 'rgba(215,25,28,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(127,221,117,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DAS Gending':
+                    return {
+                pane: 'pane_DAS_UPTPAS_20_1',
+                opacity: 1,
+                color: 'rgba(215,25,28,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(214,147,85,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DAS Jabung':
+                    return {
+                pane: 'pane_DAS_UPTPAS_20_1',
+                opacity: 1,
+                color: 'rgba(215,25,28,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(84,84,229,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DAS Kandangjati':
+                    return {
+                pane: 'pane_DAS_UPTPAS_20_1',
+                opacity: 1,
+                color: 'rgba(215,25,28,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(128,153,235,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DAS Kapasan':
+                    return {
+                pane: 'pane_DAS_UPTPAS_20_1',
+                opacity: 1,
+                color: 'rgba(215,25,28,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(97,226,114,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DAS Kapuran':
+                    return {
+                pane: 'pane_DAS_UPTPAS_20_1',
+                opacity: 1,
+                color: 'rgba(215,25,28,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(113,176,221,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DAS Karanganyar':
+                    return {
+                pane: 'pane_DAS_UPTPAS_20_1',
+                opacity: 1,
+                color: 'rgba(215,25,28,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(129,206,107,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DAS Kedunggaleng':
+                    return {
+                pane: 'pane_DAS_UPTPAS_20_1',
+                opacity: 1,
+                color: 'rgba(215,25,28,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(221,228,130,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DAS Kedungjati':
+                    return {
+                pane: 'pane_DAS_UPTPAS_20_1',
+                opacity: 1,
+                color: 'rgba(215,25,28,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(63,227,200,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DAS Kertosono':
+                    return {
+                pane: 'pane_DAS_UPTPAS_20_1',
+                opacity: 1,
+                color: 'rgba(215,25,28,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(120,57,230,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DAS Krajan':
+                    return {
+                pane: 'pane_DAS_UPTPAS_20_1',
+                opacity: 1,
+                color: 'rgba(215,25,28,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(105,214,183,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DAS Kresek':
+                    return {
+                pane: 'pane_DAS_UPTPAS_20_1',
+                opacity: 1,
+                color: 'rgba(215,25,28,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(112,208,147,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DAS Lamdoyo':
+                    return {
+                pane: 'pane_DAS_UPTPAS_20_1',
+                opacity: 1,
+                color: 'rgba(215,25,28,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(175,99,205,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DAS Laweyan':
+                    return {
+                pane: 'pane_DAS_UPTPAS_20_1',
+                opacity: 1,
+                color: 'rgba(215,25,28,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(180,207,58,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DAS Legundi':
+                    return {
+                pane: 'pane_DAS_UPTPAS_20_1',
+                opacity: 1,
+                color: 'rgba(215,25,28,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(91,200,118,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DAS Mangunharjo':
+                    return {
+                pane: 'pane_DAS_UPTPAS_20_1',
+                opacity: 1,
+                color: 'rgba(215,25,28,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(42,225,45,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DAS Paiton':
+                    return {
+                pane: 'pane_DAS_UPTPAS_20_1',
+                opacity: 1,
+                color: 'rgba(215,25,28,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(208,136,112,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DAS Pancarglagas':
+                    return {
+                pane: 'pane_DAS_UPTPAS_20_1',
+                opacity: 1,
+                color: 'rgba(215,25,28,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(210,120,192,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DAS Parangan':
+                    return {
+                pane: 'pane_DAS_UPTPAS_20_1',
+                opacity: 1,
+                color: 'rgba(215,25,28,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(71,228,165,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DAS Pasinan':
+                    return {
+                pane: 'pane_DAS_UPTPAS_20_1',
+                opacity: 1,
+                color: 'rgba(215,25,28,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(206,67,65,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DAS Pasirpanjang':
+                    return {
+                pane: 'pane_DAS_UPTPAS_20_1',
+                opacity: 1,
+                color: 'rgba(215,25,28,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(40,119,210,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DAS Pateman':
+                    return {
+                pane: 'pane_DAS_UPTPAS_20_1',
+                opacity: 1,
+                color: 'rgba(215,25,28,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(131,221,13,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DAS Pekalen':
+                    return {
+                pane: 'pane_DAS_UPTPAS_20_1',
+                opacity: 1,
+                color: 'rgba(215,25,28,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(200,161,104,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DAS Pesisir':
+                    return {
+                pane: 'pane_DAS_UPTPAS_20_1',
+                opacity: 1,
+                color: 'rgba(215,25,28,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(203,146,112,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DAS Petung':
+                    return {
+                pane: 'pane_DAS_UPTPAS_20_1',
+                opacity: 1,
+                color: 'rgba(215,25,28,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(89,74,204,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DAS Pilang':
+                    return {
+                pane: 'pane_DAS_UPTPAS_20_1',
+                opacity: 1,
+                color: 'rgba(215,25,28,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(156,221,124,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DAS Pinang':
+                    return {
+                pane: 'pane_DAS_UPTPAS_20_1',
+                opacity: 1,
+                color: 'rgba(215,25,28,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(157,205,45,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DAS Rejoso':
+                    return {
+                pane: 'pane_DAS_UPTPAS_20_1',
+                opacity: 1,
+                color: 'rgba(215,25,28,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(219,45,143,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DAS Rondoningo':
+                    return {
+                pane: 'pane_DAS_UPTPAS_20_1',
+                opacity: 1,
+                color: 'rgba(215,25,28,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(237,87,120,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DAS Sodo':
+                    return {
+                pane: 'pane_DAS_UPTPAS_20_1',
+                opacity: 1,
+                color: 'rgba(215,25,28,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(120,39,207,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DAS Sukabumi':
+                    return {
+                pane: 'pane_DAS_UPTPAS_20_1',
+                opacity: 1,
+                color: 'rgba(215,25,28,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(224,217,77,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DAS Sumberasih':
+                    return {
+                pane: 'pane_DAS_UPTPAS_20_1',
+                opacity: 1,
+                color: 'rgba(215,25,28,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(74,31,218,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DAS Sumberbanteng':
+                    return {
+                pane: 'pane_DAS_UPTPAS_20_1',
+                opacity: 1,
+                color: 'rgba(215,25,28,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(110,213,25,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DAS Sumberrejeki':
+                    return {
+                pane: 'pane_DAS_UPTPAS_20_1',
+                opacity: 1,
+                color: 'rgba(215,25,28,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(206,32,192,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DAS Taman':
+                    return {
+                pane: 'pane_DAS_UPTPAS_20_1',
+                opacity: 1,
+                color: 'rgba(215,25,28,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(232,46,108,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DAS Tambaan':
+                    return {
+                pane: 'pane_DAS_UPTPAS_20_1',
+                opacity: 1,
+                color: 'rgba(215,25,28,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(37,224,127,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DAS Tandu':
+                    return {
+                pane: 'pane_DAS_UPTPAS_20_1',
+                opacity: 1,
+                color: 'rgba(215,25,28,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(208,183,58,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DAS Umbul':
+                    return {
+                pane: 'pane_DAS_UPTPAS_20_1',
+                opacity: 1,
+                color: 'rgba(215,25,28,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(239,35,127,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DAS Watuprapat':
+                    return {
+                pane: 'pane_DAS_UPTPAS_20_1',
+                opacity: 1,
+                color: 'rgba(215,25,28,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(211,60,163,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DAS Welang':
+                    return {
+                pane: 'pane_DAS_UPTPAS_20_1',
+                opacity: 1,
+                color: 'rgba(215,25,28,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(69,88,231,1.0)',
+                interactive: true,
+            }
+                    break;
+                default:
+                    return {
+                pane: 'pane_DAS_UPTPAS_20_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(128,208,226,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_DAS_UPTPAS_20_1');
+        map.getPane('pane_DAS_UPTPAS_20_1').style.zIndex = 401;
+        map.getPane('pane_DAS_UPTPAS_20_1').style['mix-blend-mode'] = 'normal';
+        var layer_DAS_UPTPAS_20_1 = new L.geoJson(json_DAS_UPTPAS_20_1, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_DAS_UPTPAS_20_1',
+            layerName: 'layer_DAS_UPTPAS_20_1',
+            pane: 'pane_DAS_UPTPAS_20_1',
+            onEachFeature: pop_DAS_UPTPAS_20_1,
+            style: style_DAS_UPTPAS_20_1_0,
+        });
+        bounds_group.addLayer(layer_DAS_UPTPAS_20_1);
+        map.addLayer(layer_DAS_UPTPAS_20_1);
+        function pop_admin_kec_kota_pas_2(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['OBJECTID'] !== null ? autolinker.link(feature.properties['OBJECTID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NAMOBJ'] !== null ? autolinker.link(feature.properties['NAMOBJ'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['FCODE'] !== null ? autolinker.link(feature.properties['FCODE'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['REMARK'] !== null ? autolinker.link(feature.properties['REMARK'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['METADATA'] !== null ? autolinker.link(feature.properties['METADATA'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['SRS_ID'] !== null ? autolinker.link(feature.properties['SRS_ID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['KDBBPS'] !== null ? autolinker.link(feature.properties['KDBBPS'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['KDCBPS'] !== null ? autolinker.link(feature.properties['KDCBPS'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['KDCPUM'] !== null ? autolinker.link(feature.properties['KDCPUM'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['KDEBPS'] !== null ? autolinker.link(feature.properties['KDEBPS'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['KDEPUM'] !== null ? autolinker.link(feature.properties['KDEPUM'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['KDPBPS'] !== null ? autolinker.link(feature.properties['KDPBPS'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['KDPKAB'] !== null ? autolinker.link(feature.properties['KDPKAB'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['KDPPUM'] !== null ? autolinker.link(feature.properties['KDPPUM'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['LUASWH'] !== null ? autolinker.link(feature.properties['LUASWH'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['TIPADM'] !== null ? autolinker.link(feature.properties['TIPADM'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WADMKC'] !== null ? autolinker.link(feature.properties['WADMKC'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WADMKD'] !== null ? autolinker.link(feature.properties['WADMKD'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WADMKK'] !== null ? autolinker.link(feature.properties['WADMKK'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WADMPR'] !== null ? autolinker.link(feature.properties['WADMPR'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WIADKC'] !== null ? autolinker.link(feature.properties['WIADKC'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WIADKK'] !== null ? autolinker.link(feature.properties['WIADKK'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WIADPR'] !== null ? autolinker.link(feature.properties['WIADPR'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WIADKD'] !== null ? autolinker.link(feature.properties['WIADKD'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['UUPP'] !== null ? autolinker.link(feature.properties['UUPP'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['luas'] !== null ? autolinker.link(feature.properties['luas'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['SHAPE_Leng'] !== null ? autolinker.link(feature.properties['SHAPE_Leng'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['SHAPE_Area'] !== null ? autolinker.link(feature.properties['SHAPE_Area'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_admin_kec_kota_pas_2_0() {
+            return {
+                pane: 'pane_admin_kec_kota_pas_2',
+                opacity: 1,
+                color: 'rgba(181,105,13,1.0)',
+                dashArray: '10,5,1,5,1,5',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_admin_kec_kota_pas_2');
+        map.getPane('pane_admin_kec_kota_pas_2').style.zIndex = 402;
+        map.getPane('pane_admin_kec_kota_pas_2').style['mix-blend-mode'] = 'normal';
+        var layer_admin_kec_kota_pas_2 = new L.geoJson(json_admin_kec_kota_pas_2, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_admin_kec_kota_pas_2',
+            layerName: 'layer_admin_kec_kota_pas_2',
+            pane: 'pane_admin_kec_kota_pas_2',
+            onEachFeature: pop_admin_kec_kota_pas_2,
+            style: style_admin_kec_kota_pas_2_0,
+        });
+        bounds_group.addLayer(layer_admin_kec_kota_pas_2);
+        map.addLayer(layer_admin_kec_kota_pas_2);
+        function pop_admin_kec_kab_pas_3(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['OBJECTID'] !== null ? autolinker.link(feature.properties['OBJECTID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NAMOBJ'] !== null ? autolinker.link(feature.properties['NAMOBJ'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['FCODE'] !== null ? autolinker.link(feature.properties['FCODE'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['REMARK'] !== null ? autolinker.link(feature.properties['REMARK'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['METADATA'] !== null ? autolinker.link(feature.properties['METADATA'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['SRS_ID'] !== null ? autolinker.link(feature.properties['SRS_ID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['KDBBPS'] !== null ? autolinker.link(feature.properties['KDBBPS'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['KDCBPS'] !== null ? autolinker.link(feature.properties['KDCBPS'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['KDCPUM'] !== null ? autolinker.link(feature.properties['KDCPUM'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['KDEBPS'] !== null ? autolinker.link(feature.properties['KDEBPS'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['KDEPUM'] !== null ? autolinker.link(feature.properties['KDEPUM'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['KDPBPS'] !== null ? autolinker.link(feature.properties['KDPBPS'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['KDPKAB'] !== null ? autolinker.link(feature.properties['KDPKAB'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['KDPPUM'] !== null ? autolinker.link(feature.properties['KDPPUM'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['LUASWH'] !== null ? autolinker.link(feature.properties['LUASWH'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['TIPADM'] !== null ? autolinker.link(feature.properties['TIPADM'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WADMKC'] !== null ? autolinker.link(feature.properties['WADMKC'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WADMKD'] !== null ? autolinker.link(feature.properties['WADMKD'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WADMKK'] !== null ? autolinker.link(feature.properties['WADMKK'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WADMPR'] !== null ? autolinker.link(feature.properties['WADMPR'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WIADKC'] !== null ? autolinker.link(feature.properties['WIADKC'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WIADKK'] !== null ? autolinker.link(feature.properties['WIADKK'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WIADPR'] !== null ? autolinker.link(feature.properties['WIADPR'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WIADKD'] !== null ? autolinker.link(feature.properties['WIADKD'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['UUPP'] !== null ? autolinker.link(feature.properties['UUPP'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['luas'] !== null ? autolinker.link(feature.properties['luas'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['SHAPE_Leng'] !== null ? autolinker.link(feature.properties['SHAPE_Leng'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['SHAPE_Area'] !== null ? autolinker.link(feature.properties['SHAPE_Area'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_admin_kec_kab_pas_3_0() {
+            return {
+                pane: 'pane_admin_kec_kab_pas_3',
+                opacity: 1,
+                color: 'rgba(196,121,16,1.0)',
+                dashArray: '10,5,1,5,1,5',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_admin_kec_kab_pas_3');
+        map.getPane('pane_admin_kec_kab_pas_3').style.zIndex = 403;
+        map.getPane('pane_admin_kec_kab_pas_3').style['mix-blend-mode'] = 'normal';
+        var layer_admin_kec_kab_pas_3 = new L.geoJson(json_admin_kec_kab_pas_3, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_admin_kec_kab_pas_3',
+            layerName: 'layer_admin_kec_kab_pas_3',
+            pane: 'pane_admin_kec_kab_pas_3',
+            onEachFeature: pop_admin_kec_kab_pas_3,
+            style: style_admin_kec_kab_pas_3_0,
+        });
+        bounds_group.addLayer(layer_admin_kec_kab_pas_3);
+        map.addLayer(layer_admin_kec_kab_pas_3);
+        function pop_admin_kec_kota_prob_4(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['OBJECTID'] !== null ? autolinker.link(feature.properties['OBJECTID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NAMOBJ'] !== null ? autolinker.link(feature.properties['NAMOBJ'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['FCODE'] !== null ? autolinker.link(feature.properties['FCODE'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['REMARK'] !== null ? autolinker.link(feature.properties['REMARK'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['METADATA'] !== null ? autolinker.link(feature.properties['METADATA'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['SRS_ID'] !== null ? autolinker.link(feature.properties['SRS_ID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['KDBBPS'] !== null ? autolinker.link(feature.properties['KDBBPS'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['KDCBPS'] !== null ? autolinker.link(feature.properties['KDCBPS'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['KDCPUM'] !== null ? autolinker.link(feature.properties['KDCPUM'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['KDEBPS'] !== null ? autolinker.link(feature.properties['KDEBPS'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['KDEPUM'] !== null ? autolinker.link(feature.properties['KDEPUM'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['KDPBPS'] !== null ? autolinker.link(feature.properties['KDPBPS'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['KDPKAB'] !== null ? autolinker.link(feature.properties['KDPKAB'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['KDPPUM'] !== null ? autolinker.link(feature.properties['KDPPUM'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['LUASWH'] !== null ? autolinker.link(feature.properties['LUASWH'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['TIPADM'] !== null ? autolinker.link(feature.properties['TIPADM'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WADMKC'] !== null ? autolinker.link(feature.properties['WADMKC'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WADMKD'] !== null ? autolinker.link(feature.properties['WADMKD'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WADMKK'] !== null ? autolinker.link(feature.properties['WADMKK'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WADMPR'] !== null ? autolinker.link(feature.properties['WADMPR'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WIADKC'] !== null ? autolinker.link(feature.properties['WIADKC'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WIADKK'] !== null ? autolinker.link(feature.properties['WIADKK'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WIADPR'] !== null ? autolinker.link(feature.properties['WIADPR'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WIADKD'] !== null ? autolinker.link(feature.properties['WIADKD'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['UUPP'] !== null ? autolinker.link(feature.properties['UUPP'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['luas'] !== null ? autolinker.link(feature.properties['luas'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['SHAPE_Leng'] !== null ? autolinker.link(feature.properties['SHAPE_Leng'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['SHAPE_Area'] !== null ? autolinker.link(feature.properties['SHAPE_Area'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_admin_kec_kota_prob_4_0() {
+            return {
+                pane: 'pane_admin_kec_kota_prob_4',
+                opacity: 1,
+                color: 'rgba(190,105,13,1.0)',
+                dashArray: '10,5,1,5,1,5',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_admin_kec_kota_prob_4');
+        map.getPane('pane_admin_kec_kota_prob_4').style.zIndex = 404;
+        map.getPane('pane_admin_kec_kota_prob_4').style['mix-blend-mode'] = 'normal';
+        var layer_admin_kec_kota_prob_4 = new L.geoJson(json_admin_kec_kota_prob_4, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_admin_kec_kota_prob_4',
+            layerName: 'layer_admin_kec_kota_prob_4',
+            pane: 'pane_admin_kec_kota_prob_4',
+            onEachFeature: pop_admin_kec_kota_prob_4,
+            style: style_admin_kec_kota_prob_4_0,
+        });
+        bounds_group.addLayer(layer_admin_kec_kota_prob_4);
+        map.addLayer(layer_admin_kec_kota_prob_4);
+        function pop_admin_kec_kab_prob_5(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['OBJECTID'] !== null ? autolinker.link(feature.properties['OBJECTID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NAMOBJ'] !== null ? autolinker.link(feature.properties['NAMOBJ'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['FCODE'] !== null ? autolinker.link(feature.properties['FCODE'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['REMARK'] !== null ? autolinker.link(feature.properties['REMARK'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['METADATA'] !== null ? autolinker.link(feature.properties['METADATA'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['SRS_ID'] !== null ? autolinker.link(feature.properties['SRS_ID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['KDBBPS'] !== null ? autolinker.link(feature.properties['KDBBPS'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['KDCBPS'] !== null ? autolinker.link(feature.properties['KDCBPS'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['KDCPUM'] !== null ? autolinker.link(feature.properties['KDCPUM'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['KDEBPS'] !== null ? autolinker.link(feature.properties['KDEBPS'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['KDEPUM'] !== null ? autolinker.link(feature.properties['KDEPUM'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['KDPBPS'] !== null ? autolinker.link(feature.properties['KDPBPS'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['KDPKAB'] !== null ? autolinker.link(feature.properties['KDPKAB'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['KDPPUM'] !== null ? autolinker.link(feature.properties['KDPPUM'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['LUASWH'] !== null ? autolinker.link(feature.properties['LUASWH'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['TIPADM'] !== null ? autolinker.link(feature.properties['TIPADM'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WADMKC'] !== null ? autolinker.link(feature.properties['WADMKC'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WADMKD'] !== null ? autolinker.link(feature.properties['WADMKD'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WADMKK'] !== null ? autolinker.link(feature.properties['WADMKK'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WADMPR'] !== null ? autolinker.link(feature.properties['WADMPR'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WIADKC'] !== null ? autolinker.link(feature.properties['WIADKC'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WIADKK'] !== null ? autolinker.link(feature.properties['WIADKK'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WIADPR'] !== null ? autolinker.link(feature.properties['WIADPR'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WIADKD'] !== null ? autolinker.link(feature.properties['WIADKD'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['UUPP'] !== null ? autolinker.link(feature.properties['UUPP'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['luas'] !== null ? autolinker.link(feature.properties['luas'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['SHAPE_Leng'] !== null ? autolinker.link(feature.properties['SHAPE_Leng'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['SHAPE_Area'] !== null ? autolinker.link(feature.properties['SHAPE_Area'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_admin_kec_kab_prob_5_0() {
+            return {
+                pane: 'pane_admin_kec_kab_prob_5',
+                opacity: 1,
+                color: 'rgba(173,96,37,1.0)',
+                dashArray: '10,5,1,5,1,5',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_admin_kec_kab_prob_5');
+        map.getPane('pane_admin_kec_kab_prob_5').style.zIndex = 405;
+        map.getPane('pane_admin_kec_kab_prob_5').style['mix-blend-mode'] = 'normal';
+        var layer_admin_kec_kab_prob_5 = new L.geoJson(json_admin_kec_kab_prob_5, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_admin_kec_kab_prob_5',
+            layerName: 'layer_admin_kec_kab_prob_5',
+            pane: 'pane_admin_kec_kab_prob_5',
+            onEachFeature: pop_admin_kec_kab_prob_5,
+            style: style_admin_kec_kab_prob_5_0,
+        });
+        bounds_group.addLayer(layer_admin_kec_kab_prob_5);
+        map.addLayer(layer_admin_kec_kab_prob_5);
+        function pop_Pos_hujan_6(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['OID_'] !== null ? autolinker.link(feature.properties['OID_'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Name'] !== null ? autolinker.link(feature.properties['Name'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['FolderPath'] !== null ? autolinker.link(feature.properties['FolderPath'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['x'] !== null ? autolinker.link(feature.properties['x'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['y'] !== null ? autolinker.link(feature.properties['y'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Pos_hujan_6_0() {
+            return {
+                pane: 'pane_Pos_hujan_6',
+        rotationAngle: 0.0,
+        rotationOrigin: 'center center',
+        icon: L.icon({
+            iconUrl: 'markers/blue-marker.svg',
+            iconSize: [30.4, 30.4]
+        }),
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Pos_hujan_6');
+        map.getPane('pane_Pos_hujan_6').style.zIndex = 406;
+        map.getPane('pane_Pos_hujan_6').style['mix-blend-mode'] = 'normal';
+        var layer_Pos_hujan_6 = new L.geoJson(json_Pos_hujan_6, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Pos_hujan_6',
+            layerName: 'layer_Pos_hujan_6',
+            pane: 'pane_Pos_hujan_6',
+            onEachFeature: pop_Pos_hujan_6,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.marker(latlng, style_Pos_hujan_6_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Pos_hujan_6);
+        map.addLayer(layer_Pos_hujan_6);
+        function pop_Pos_AWLR_7(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['id'] !== null ? autolinker.link(feature.properties['id'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Nama'] !== null ? autolinker.link(feature.properties['Nama'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['SWS'] !== null ? autolinker.link(feature.properties['SWS'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['SubSWS'] !== null ? autolinker.link(feature.properties['SubSWS'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['DAS'] !== null ? autolinker.link(feature.properties['DAS'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Kode'] !== null ? autolinker.link(feature.properties['Kode'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['elevasi'] !== null ? autolinker.link(feature.properties['elevasi'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Lintang'] !== null ? autolinker.link(feature.properties['Lintang'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Bujur'] !== null ? autolinker.link(feature.properties['Bujur'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Tahun'] !== null ? autolinker.link(feature.properties['Tahun'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Tipe'] !== null ? autolinker.link(feature.properties['Tipe'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Nama_Alat'] !== null ? autolinker.link(feature.properties['Nama_Alat'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Pengamat'] !== null ? autolinker.link(feature.properties['Pengamat'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Nama_Penja'] !== null ? autolinker.link(feature.properties['Nama_Penja'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Sungai'] !== null ? autolinker.link(feature.properties['Sungai'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Lokasi'] !== null ? autolinker.link(feature.properties['Lokasi'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Pengelola'] !== null ? autolinker.link(feature.properties['Pengelola'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Kondisi'] !== null ? autolinker.link(feature.properties['Kondisi'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Desa'] !== null ? autolinker.link(feature.properties['Desa'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Kecamatan'] !== null ? autolinker.link(feature.properties['Kecamatan'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Kabupaten'] !== null ? autolinker.link(feature.properties['Kabupaten'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Propinsi'] !== null ? autolinker.link(feature.properties['Propinsi'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Qjan'] !== null ? autolinker.link(feature.properties['Qjan'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Qfeb'] !== null ? autolinker.link(feature.properties['Qfeb'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Qmar'] !== null ? autolinker.link(feature.properties['Qmar'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Qapr'] !== null ? autolinker.link(feature.properties['Qapr'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Qmei'] !== null ? autolinker.link(feature.properties['Qmei'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Qjun'] !== null ? autolinker.link(feature.properties['Qjun'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Qjul'] !== null ? autolinker.link(feature.properties['Qjul'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Qagt'] !== null ? autolinker.link(feature.properties['Qagt'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Qsep'] !== null ? autolinker.link(feature.properties['Qsep'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Qokt'] !== null ? autolinker.link(feature.properties['Qokt'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Qnop'] !== null ? autolinker.link(feature.properties['Qnop'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Qdes'] !== null ? autolinker.link(feature.properties['Qdes'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['SumberData'] !== null ? autolinker.link(feature.properties['SumberData'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Y'] !== null ? autolinker.link(feature.properties['Y'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['X'] !== null ? autolinker.link(feature.properties['X'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Pos_AWLR_7_0() {
+            return {
+                pane: 'pane_Pos_AWLR_7',
+        rotationAngle: 0.0,
+        rotationOrigin: 'center center',
+        icon: L.icon({
+            iconUrl: 'markers/red-marker.svg',
+            iconSize: [30.4, 30.4]
+        }),
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Pos_AWLR_7');
+        map.getPane('pane_Pos_AWLR_7').style.zIndex = 407;
+        map.getPane('pane_Pos_AWLR_7').style['mix-blend-mode'] = 'normal';
+        var layer_Pos_AWLR_7 = new L.geoJson(json_Pos_AWLR_7, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Pos_AWLR_7',
+            layerName: 'layer_Pos_AWLR_7',
+            pane: 'pane_Pos_AWLR_7',
+            onEachFeature: pop_Pos_AWLR_7,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.marker(latlng, style_Pos_AWLR_7_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Pos_AWLR_7);
+        map.addLayer(layer_Pos_AWLR_7);
+        var osmGeocoder = new L.Control.Geocoder({
+            collapsed: true,
+            position: 'topleft',
+            text: 'Search',
+            title: 'Testing'
+        }).addTo(map);
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .className += ' fa fa-search';
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .title += 'Search for a place';
+        var baseMaps = {};
+        L.control.layers(baseMaps,{'<img src="legend/Pos_AWLR_7.png" /> Pos_AWLR': layer_Pos_AWLR_7,'<img src="legend/Pos_hujan_6.png" /> Pos_hujan': layer_Pos_hujan_6,'<img src="legend/admin_kec_kab_prob_5.png" /> admin_kec_kab_prob': layer_admin_kec_kab_prob_5,'<img src="legend/admin_kec_kota_prob_4.png" /> admin_kec_kota_prob': layer_admin_kec_kota_prob_4,'<img src="legend/admin_kec_kab_pas_3.png" /> admin_kec_kab_pas': layer_admin_kec_kab_pas_3,'<img src="legend/admin_kec_kota_pas_2.png" /> admin_kec_kota_pas': layer_admin_kec_kota_pas_2,'DAS_UPTPAS_20<br /><table><tr><td style="text-align: center;"><img src="legend/DAS_UPTPAS_20_1_DASBandeng0.png" /></td><td>DAS Bandeng</td></tr><tr><td style="text-align: center;"><img src="legend/DAS_UPTPAS_20_1_DASBanyubiru1.png" /></td><td>DAS Banyubiru</td></tr><tr><td style="text-align: center;"><img src="legend/DAS_UPTPAS_20_1_DASBanyuglugur2.png" /></td><td>DAS Banyuglugur</td></tr><tr><td style="text-align: center;"><img src="legend/DAS_UPTPAS_20_1_DASBayeman3.png" /></td><td>DAS Bayeman</td></tr><tr><td style="text-align: center;"><img src="legend/DAS_UPTPAS_20_1_DASBesi4.png" /></td><td>DAS Besi</td></tr><tr><td style="text-align: center;"><img src="legend/DAS_UPTPAS_20_1_DASBesuk5.png" /></td><td>DAS Besuk</td></tr><tr><td style="text-align: center;"><img src="legend/DAS_UPTPAS_20_1_DASBhinar6.png" /></td><td>DAS Bhinar</td></tr><tr><td style="text-align: center;"><img src="legend/DAS_UPTPAS_20_1_DASBlobo7.png" /></td><td>DAS Blobo</td></tr><tr><td style="text-align: center;"><img src="legend/DAS_UPTPAS_20_1_DASBujel8.png" /></td><td>DAS Bujel</td></tr><tr><td style="text-align: center;"><img src="legend/DAS_UPTPAS_20_1_DASCurahmenjangan9.png" /></td><td>DAS Curahmenjangan</td></tr><tr><td style="text-align: center;"><img src="legend/DAS_UPTPAS_20_1_DASGembong10.png" /></td><td>DAS Gembong</td></tr><tr><td style="text-align: center;"><img src="legend/DAS_UPTPAS_20_1_DASGending11.png" /></td><td>DAS Gending</td></tr><tr><td style="text-align: center;"><img src="legend/DAS_UPTPAS_20_1_DASJabung12.png" /></td><td>DAS Jabung</td></tr><tr><td style="text-align: center;"><img src="legend/DAS_UPTPAS_20_1_DASKandangjati13.png" /></td><td>DAS Kandangjati</td></tr><tr><td style="text-align: center;"><img src="legend/DAS_UPTPAS_20_1_DASKapasan14.png" /></td><td>DAS Kapasan</td></tr><tr><td style="text-align: center;"><img src="legend/DAS_UPTPAS_20_1_DASKapuran15.png" /></td><td>DAS Kapuran</td></tr><tr><td style="text-align: center;"><img src="legend/DAS_UPTPAS_20_1_DASKaranganyar16.png" /></td><td>DAS Karanganyar</td></tr><tr><td style="text-align: center;"><img src="legend/DAS_UPTPAS_20_1_DASKedunggaleng17.png" /></td><td>DAS Kedunggaleng</td></tr><tr><td style="text-align: center;"><img src="legend/DAS_UPTPAS_20_1_DASKedungjati18.png" /></td><td>DAS Kedungjati</td></tr><tr><td style="text-align: center;"><img src="legend/DAS_UPTPAS_20_1_DASKertosono19.png" /></td><td>DAS Kertosono</td></tr><tr><td style="text-align: center;"><img src="legend/DAS_UPTPAS_20_1_DASKrajan20.png" /></td><td>DAS Krajan</td></tr><tr><td style="text-align: center;"><img src="legend/DAS_UPTPAS_20_1_DASKresek21.png" /></td><td>DAS Kresek</td></tr><tr><td style="text-align: center;"><img src="legend/DAS_UPTPAS_20_1_DASLamdoyo22.png" /></td><td>DAS Lamdoyo</td></tr><tr><td style="text-align: center;"><img src="legend/DAS_UPTPAS_20_1_DASLaweyan23.png" /></td><td>DAS Laweyan</td></tr><tr><td style="text-align: center;"><img src="legend/DAS_UPTPAS_20_1_DASLegundi24.png" /></td><td>DAS Legundi</td></tr><tr><td style="text-align: center;"><img src="legend/DAS_UPTPAS_20_1_DASMangunharjo25.png" /></td><td>DAS Mangunharjo</td></tr><tr><td style="text-align: center;"><img src="legend/DAS_UPTPAS_20_1_DASPaiton26.png" /></td><td>DAS Paiton</td></tr><tr><td style="text-align: center;"><img src="legend/DAS_UPTPAS_20_1_DASPancarglagas27.png" /></td><td>DAS Pancarglagas</td></tr><tr><td style="text-align: center;"><img src="legend/DAS_UPTPAS_20_1_DASParangan28.png" /></td><td>DAS Parangan</td></tr><tr><td style="text-align: center;"><img src="legend/DAS_UPTPAS_20_1_DASPasinan29.png" /></td><td>DAS Pasinan</td></tr><tr><td style="text-align: center;"><img src="legend/DAS_UPTPAS_20_1_DASPasirpanjang30.png" /></td><td>DAS Pasirpanjang</td></tr><tr><td style="text-align: center;"><img src="legend/DAS_UPTPAS_20_1_DASPateman31.png" /></td><td>DAS Pateman</td></tr><tr><td style="text-align: center;"><img src="legend/DAS_UPTPAS_20_1_DASPekalen32.png" /></td><td>DAS Pekalen</td></tr><tr><td style="text-align: center;"><img src="legend/DAS_UPTPAS_20_1_DASPesisir33.png" /></td><td>DAS Pesisir</td></tr><tr><td style="text-align: center;"><img src="legend/DAS_UPTPAS_20_1_DASPetung34.png" /></td><td>DAS Petung</td></tr><tr><td style="text-align: center;"><img src="legend/DAS_UPTPAS_20_1_DASPilang35.png" /></td><td>DAS Pilang</td></tr><tr><td style="text-align: center;"><img src="legend/DAS_UPTPAS_20_1_DASPinang36.png" /></td><td>DAS Pinang</td></tr><tr><td style="text-align: center;"><img src="legend/DAS_UPTPAS_20_1_DASRejoso37.png" /></td><td>DAS Rejoso</td></tr><tr><td style="text-align: center;"><img src="legend/DAS_UPTPAS_20_1_DASRondoningo38.png" /></td><td>DAS Rondoningo</td></tr><tr><td style="text-align: center;"><img src="legend/DAS_UPTPAS_20_1_DASSodo39.png" /></td><td>DAS Sodo</td></tr><tr><td style="text-align: center;"><img src="legend/DAS_UPTPAS_20_1_DASSukabumi40.png" /></td><td>DAS Sukabumi</td></tr><tr><td style="text-align: center;"><img src="legend/DAS_UPTPAS_20_1_DASSumberasih41.png" /></td><td>DAS Sumberasih</td></tr><tr><td style="text-align: center;"><img src="legend/DAS_UPTPAS_20_1_DASSumberbanteng42.png" /></td><td>DAS Sumberbanteng</td></tr><tr><td style="text-align: center;"><img src="legend/DAS_UPTPAS_20_1_DASSumberrejeki43.png" /></td><td>DAS Sumberrejeki</td></tr><tr><td style="text-align: center;"><img src="legend/DAS_UPTPAS_20_1_DASTaman44.png" /></td><td>DAS Taman</td></tr><tr><td style="text-align: center;"><img src="legend/DAS_UPTPAS_20_1_DASTambaan45.png" /></td><td>DAS Tambaan</td></tr><tr><td style="text-align: center;"><img src="legend/DAS_UPTPAS_20_1_DASTandu46.png" /></td><td>DAS Tandu</td></tr><tr><td style="text-align: center;"><img src="legend/DAS_UPTPAS_20_1_DASUmbul47.png" /></td><td>DAS Umbul</td></tr><tr><td style="text-align: center;"><img src="legend/DAS_UPTPAS_20_1_DASWatuprapat48.png" /></td><td>DAS Watuprapat</td></tr><tr><td style="text-align: center;"><img src="legend/DAS_UPTPAS_20_1_DASWelang49.png" /></td><td>DAS Welang</td></tr><tr><td style="text-align: center;"><img src="legend/DAS_UPTPAS_20_1_50.png" /></td><td></td></tr></table>': layer_DAS_UPTPAS_20_1,"OpenStreetMap": layer_OpenStreetMap_0,},{collapsed:false}).addTo(map);
+        setBounds();
+        var i = 0;
+        layer_DAS_UPTPAS_20_1.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['Nama'] !== null?String('<div style="color: #c04242; font-size: 10pt; font-family: \'Arial\', sans-serif;">' + layer.feature.properties['Nama']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_DAS_UPTPAS_20_1'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        var i = 0;
+        layer_admin_kec_kota_pas_2.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['NAMOBJ'] !== null?String('<div style="color: #323232; font-size: 10pt; font-family: \'Arial\', sans-serif;">' + layer.feature.properties['NAMOBJ']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_admin_kec_kota_pas_2'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        var i = 0;
+        layer_admin_kec_kab_pas_3.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['NAMOBJ'] !== null?String('<div style="color: #323232; font-size: 10pt; font-family: \'Arial\', sans-serif;">' + layer.feature.properties['NAMOBJ']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_admin_kec_kab_pas_3'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        var i = 0;
+        layer_admin_kec_kota_prob_4.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['NAMOBJ'] !== null?String('<div style="color: #323232; font-size: 10pt; font-family: \'Arial\', sans-serif;">' + layer.feature.properties['NAMOBJ']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_admin_kec_kota_prob_4'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        var i = 0;
+        layer_admin_kec_kab_prob_5.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['NAMOBJ'] !== null?String('<div style="color: #323232; font-size: 10pt; font-family: \'Arial\', sans-serif;">' + layer.feature.properties['NAMOBJ']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_admin_kec_kab_prob_5'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        var i = 0;
+        layer_Pos_hujan_6.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['Name'] !== null?String('<div style="color: #63acd0; font-size: 10pt; font-style: italic; font-family: \'Arial\', sans-serif;">' + layer.feature.properties['Name']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_Pos_hujan_6'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        var i = 0;
+        layer_Pos_AWLR_7.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['Nama'] !== null?String('<div style="color: #bd10bd; font-size: 10pt; font-style: italic; font-family: \'Arial\', sans-serif;">' + layer.feature.properties['Nama']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_Pos_AWLR_7'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        map.addControl(new L.Control.Search({
+            layer: layer_Pos_hujan_6,
+            initial: false,
+            hideMarkerOnCollapse: true,
+            propertyName: 'Name'}));
+        document.getElementsByClassName('search-button')[0].className +=
+         ' fa fa-binoculars';
+        resetLabels([layer_DAS_UPTPAS_20_1,layer_admin_kec_kota_pas_2,layer_admin_kec_kab_pas_3,layer_admin_kec_kota_prob_4,layer_admin_kec_kab_prob_5,layer_Pos_hujan_6,layer_Pos_AWLR_7]);
+        map.on("zoomend", function(){
+            resetLabels([layer_DAS_UPTPAS_20_1,layer_admin_kec_kota_pas_2,layer_admin_kec_kab_pas_3,layer_admin_kec_kota_prob_4,layer_admin_kec_kab_prob_5,layer_Pos_hujan_6,layer_Pos_AWLR_7]);
+        });
+        map.on("layeradd", function(){
+            resetLabels([layer_DAS_UPTPAS_20_1,layer_admin_kec_kota_pas_2,layer_admin_kec_kab_pas_3,layer_admin_kec_kota_prob_4,layer_admin_kec_kab_prob_5,layer_Pos_hujan_6,layer_Pos_AWLR_7]);
+        });
+        map.on("layerremove", function(){
+            resetLabels([layer_DAS_UPTPAS_20_1,layer_admin_kec_kota_pas_2,layer_admin_kec_kab_pas_3,layer_admin_kec_kota_prob_4,layer_admin_kec_kab_prob_5,layer_Pos_hujan_6,layer_Pos_AWLR_7]);
+        });
+        </script>
+    </body>
+</html>
